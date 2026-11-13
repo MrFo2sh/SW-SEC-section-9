@@ -1,0 +1,14 @@
+{
+  "name": "broken-2-rest-lab",
+  "version": "1.0.0",
+  "description": "Deliberately vulnerable REST API teaching lab: Broken Authentication -> Broken Access Control (OWASP A07 -> A01). Localhost only.",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "secure": "SECURE=1 node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
