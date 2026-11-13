@@ -9,6 +9,7 @@
     "secure": "SECURE=1 node server.js"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "sql.js": "^1.12.0"
   }
 }

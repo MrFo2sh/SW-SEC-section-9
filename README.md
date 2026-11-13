@@ -1,7 +1,8 @@
 # DeadDrop // Access Control Lab
 
-A deliberately vulnerable **REST API** for a university software-security course.
-It teaches a chain: **Broken Authentication (OWASP A07) &rarr; Broken Access Control (OWASP A01)**.
+A deliberately vulnerable **web app + REST API** for a university software-security
+course. It teaches a chain: **Broken Authentication (OWASP A07) &rarr; Broken Access
+Control (OWASP A01) &rarr; SQL Injection (OWASP A03)**.
 
 Localhost only. Nothing here is safe to deploy.
 
@@ -9,9 +10,11 @@ Localhost only. Nothing here is safe to deploy.
 
 ## Mission
 
-DeadDrop is a headless message-drop service. There is **no sign-up** and no UI to
-click. The only way in is to **earn** a session by brute-forcing a weak account.
-From that foothold, work your way up until you own the whole system.
+DeadDrop is a private notes app with a normal-looking web UI — but there is **no
+sign-up**, so the only way in is to **earn** a session by brute-forcing a weak
+account. The UI politely hides anything you are not allowed to see; the API behind
+it is far less careful. Bypass the interface, talk to the API directly, and work
+your way up until you own the whole system.
 
 Your objectives, in order:
 
@@ -19,9 +22,11 @@ Your objectives, in order:
 2. **Map the users** — enumerate accounts and read data you shouldn't.
 3. **Escalate** — become an administrator.
 4. **Own everything** — exercise admin-only powers across every account.
+5. **Exfiltrate the database** — pull the backing store wide open.
 
-There are **four flags** (`FLAG{...}`). Each is returned by the API only when the
-matching exploit actually works — they are proof of success, not hints.
+There are **five flags** (`FLAG{...}`). Each is returned by the API only when the
+matching exploit actually works — they are proof of success, not hints. Note that
+the browser UI never shows a flag; you will only see them in raw API responses.
 
 ---
 
@@ -72,6 +77,7 @@ This is a JSON API, so your usual web tools apply:
 - **curl** — hand-craft single requests and read the JSON responses.
 - **ffuf** — fuzz wordlists against an endpoint at speed.
 - **Burp Suite** — intercept, repeat, and tamper with requests.
+- **sqlmap** — automated SQL injection (you may find a use for it later).
 
 The whole lab is built to be **ffuf-friendly**: every outcome has a meaningful
 HTTP **status code**, there are **no redirects**, and bodies are JSON. That means
@@ -100,6 +106,10 @@ All endpoints return JSON. Authenticated endpoints expect an
 | PATCH| `/api/account` | yes | Update the caller's own profile fields. |
 | GET  | `/api/admin/users` | yes (admin) | List the full user roster. |
 | POST | `/api/admin/users/:id/reset` | yes (admin) | Set a user's password (admin tool). |
+| GET  | `/api/admin/search?q=` | yes (admin) | Search members by name/username. |
+
+The app also serves HTML pages: `/login`, `/app`, `/account`, and `/admin`.
+The attacks, however, are against the `/api/...` endpoints.
 
 ### Status codes you will see
 
@@ -128,12 +138,13 @@ You are not meant to crack it — you are meant to make cracking it irrelevant.
 
 ## What to hand in
 
-Submit the **four flags**, each with **one line** explaining how you obtained it:
+Submit the **five flags**, each with **one line** explaining how you obtained it:
 
 - `F1` — ...
 - `F2` — ...
 - `F3` — ...
 - `F4` — ...
+- `F5` — ...
 
 Then, in one or two sentences per vulnerability, describe what the fix in
 **SECURE mode** does and why it stops your attack.
